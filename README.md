@@ -65,5 +65,5 @@ The Current Maintainer of this work is Alceu Frigeri
 
 ## Change log
 
-* Version 1.0
+* Version 1.0 (this)
     - Initial release at CTAN.
