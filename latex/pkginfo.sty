@@ -1,0 +1,240 @@
+%%%==============================================================================
+%% Copyright 2025-present by Alceu Frigeri
+%%
+%% This work may be distributed and/or modified under the conditions of
+%%
+%% * The [LaTeX Project Public License](http://www.latex-project.org/lppl.txt),
+%%   version 1.3c (or later), and/or
+%% * The [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html),
+%%   version 3 (or later)
+%%
+%% This work has the LPPL maintenance status *maintained*.
+%%
+%% The Current Maintainer of this work is Alceu Frigeri
+%%
+%% This is version {1.0} {2025/10/19}
+%%
+%% The list of files that compose this work can be found in the README.md file at
+%% https://ctan.org/pkg/pkginfo
+%%
+%%%==============================================================================
+\NeedsTeXFormat{LaTeX2e}[2022/06/01]
+
+\ProvidesExplPackage
+    {pkginfo}
+    {2025/10/19}
+    {1.0}
+    {Collecting~ package's~ info~ in~ a~ regular~ way}
+
+%%%%%%%
+%%%
+%%% Just an attempt of having packages info in a regular way
+%%% Idea being: { pkg info  <pck-name>  } for each and all.
+%%%
+%%%%%%%
+\cs_new_protected:Npn \pkginfo_set:nn #1#2
+  {
+    \prop_new_linked:c {l__pkginfo_ #1 _prop}
+    \prop_set_from_keyval:cn {l__pkginfo_ #1 _prop}
+      { #2 }
+  }
+%% just in case one wishes to use this in a LaTeX2e context.  
+\cs_new_eq:NN \PkgSet \pkginfo_set:nn
+
+%%%%%%%%% 
+%%%
+%%% self info
+%%%
+%%%%%%%%%
+\pkginfo_set:nn {pkginfo}
+  { 
+    name         = {pkginfo} ,
+    prefix       = {pkginfo} ,
+    date         = {2025/10/19},
+    version      = {1.0} ,
+    description  = {Collecting~ package's~ info~ in~ a~ regular~ way}
+  }
+%%%%%%%%% 
+%%%%%%%%%
+
+\cs_new_protected:Npn \pkginfo_get:nn #1#2
+  {
+    \prop_if_exist:cT { l__pkginfo_ #1 _prop }
+      {
+        \prop_item:cn 
+          { l__pkginfo_ #1 _prop } {#2}
+      }
+  }
+\cs_set_eq:NN \PkgInfo \pkginfo_get:nn
+
+\cs_new_protected:Npn \pkginfo_get:nnN #1#2#3
+  {
+    \prop_if_exist:cTF { l__pkginfo_ #1 _prop }
+      {
+        \prop_get:cnNF { l__pkginfo_ #1 _prop } { #2 } #3
+          { \tl_clear:N #3 }
+      }
+      { \tl_clear:N #3 }
+  }
+
+%%
+%% Why so? to avoid a name crash with older versions of this
+%% eventualy, this will be 'replaced' (no \cs_set..)
+%%
+\cs_new_protected:Npn \__pkginfo_description:n #1
+  { 
+    \prop_if_exist:cTF { l__pkginfo_ #1 _prop }
+      {
+        \par\noindent Package~ \textbf{\PkgInfo{#1}{name}}~
+        Version:~\PkgInfo{#1}{version}~ -~ \PkgInfo{#1}{date}
+        \par 
+        \emph{\PkgInfo{#1}{description}}~\par 
+      }
+      {
+        \par \textbf{#1}'s~info~not~defined.\par
+      }
+  } 
+\cs_set_eq:NN \PkgDescription \__pkginfo_description:n
+
+
+%%%%%%%%%%
+%%%%%%%%%% ARGH... below follows version testing...
+%%%%%%%%%%
+
+
+\msg_new:nnnn {pkginfo} {requires}
+  {
+    #1~requires~ #2~ version ~ #3~ or~ newer
+  }
+  {
+    Package~#1~ requires~ at~ least~ version ~#3 ~ from ~ package ~ #2.
+  }
+
+\msg_new:nnnn {pkginfo} {version format}
+  {
+    Invalid~ version~ format:~ #1.~ Should~be~[v]digits[~.~digits[~.~digits]][letters]
+  }
+  {
+    Invalid~ version~ format:~ #1.~ Should~be~[v]digits[~.~digits[~.~digits]][letters]
+  }
+  
+\tl_new:N \l__pkginfo_tmpa_tl
+\tl_new:N \l__pkginfo_tmpb_tl
+\tl_new:N \l__pkginfo_tmpc_tl
+\tl_new:N \l__pkginfo_tmpd_tl
+\seq_new:N \l__pkginfo_tmpa_seq
+\seq_new:N \l__pkginfo_tmpb_seq
+
+\cs_new_protected:Npn \pkginfo_required:nnn #1#2#3
+  {
+    \prop_if_exist:cTF { l__pkginfo_ #2 _prop }
+      {
+        \pkginfo_get:nnN {#2}{version}\l__pkginfo_tmpa_tl
+        
+        \__pkginfo_regex_split:VNTF \l__pkginfo_tmpa_tl \l__pkginfo_tmpa_seq
+          {
+            \__pkginfo_regex_split:nNTF {#3} \l__pkginfo_tmpb_seq
+              {
+                \__pkginfo_version_required:TF
+                  {} % OK, nothing to be done
+                  {
+                    \msg_error:nnnnn {pkginfo}{requires}{#1}{#2}{#3}
+                  }
+              }
+              {
+                \msg_error:nnn {pkginfo}{version format}{#3}
+              }
+          }
+          {
+            \msg_error:nnV {pkginfo}{version format} \l__pkginfo_tmpa_tl
+          }            
+      }
+      {
+        \msg_error:nnnnn {pkginfo}{requires}{#1}{#2}{#3}
+      }
+  }
+\cs_set_eq:NN \PkgRequired \pkginfo_required:nnn
+  
+%%
+%% This will match 
+%% versionA: [v]{digit]}[letters]
+%% versionB: [v]{digit.digit}[letters]
+%% versionC: [v]{digit.digit.digit}[letters]
+%% so that each regex has 5 capturing groups
+%%
+%%
+\regex_const:Nn \l__pkginfo_versionA_regex {\A(v?)(\d+)(\d*)(\d*)([a-zA-Z]*)\Z}
+\regex_const:Nn \l__pkginfo_versionB_regex {\A(v?)(\d+)\.(\d+)(\d*)([a-zA-Z]*)\Z}
+\regex_const:Nn \l__pkginfo_versionC_regex {\A(v?)(\d+)\.(\d+)\.(\d+)([a-zA-Z]*)\Z}
+
+\prg_new_protected_conditional:Npnn \__pkginfo_regex_split:nN #1#2 {TF}
+  {
+    \regex_split:NnNTF \l__pkginfo_versionA_regex {#1} #2
+      {
+        \prg_return_true:
+      }
+      {
+        \regex_split:NnNTF \l__pkginfo_versionB_regex {#1} #2
+          {
+            \prg_return_true:
+          }
+          {
+            \regex_split:NnNTF \l__pkginfo_versionC_regex {#1} #2
+              {
+                \prg_return_true:
+              }
+              {
+                \prg_return_false:
+              }
+          }
+      }
+  }
+\prg_generate_conditional_variant:Nnn \__pkginfo_regex_split:nN  {V} {TF}
+
+\prg_generate_conditional_variant:Nnn \fp_compare:nNn {VNV}{TF}
+\prg_generate_conditional_variant:Nnn \str_compare:nNn {VNV}{TF}
+
+\prg_new_protected_conditional:Npnn \__pkginfo_version_required: {TF}
+  {
+    \__pkginfo_build_version:NN 
+      \l__pkginfo_tmpa_seq \l__pkginfo_tmpc_tl
+    \__pkginfo_build_version:NN 
+      \l__pkginfo_tmpb_seq \l__pkginfo_tmpd_tl
+    \fp_compare:VNVTF \l__pkginfo_tmpc_tl < \l__pkginfo_tmpd_tl
+      { \prg_return_false: }
+      {
+        \fp_compare:VNVTF \l__pkginfo_tmpc_tl = \l__pkginfo_tmpd_tl
+          {
+            \seq_pop_left:NN \l__pkginfo_tmpa_seq \l__pkginfo_tmpa_tl
+            \seq_pop_left:NN \l__pkginfo_tmpb_seq \l__pkginfo_tmpb_tl
+            \str_compare:VNVTF \l__pkginfo_tmpa_tl < \l__pkginfo_tmpb_tl
+              { \prg_return_false: }
+              { \prg_return_true: }
+          }
+          { \prg_return_true: }
+      }
+  }
+
+\cs_new_protected:Npn \__pkginfo_build_version:NN #1#2
+  {
+    \seq_pop_left:NN #1 \l__pkginfo_tmpa_tl
+    \seq_pop_left:NN #1 \l__pkginfo_tmpa_tl
+
+    \seq_pop_left:NN #1 #2
+    \tl_put_right:Nn #2 {*100000}
+    \seq_pop_left:NN #1 \l__pkginfo_tmpa_tl
+    \tl_if_empty:NF \l__pkginfo_tmpa_tl
+      {
+        \tl_put_right:Nn #2 {+}
+        \tl_put_right:NV #2 \l__pkginfo_tmpa_tl
+      }
+    \seq_pop_left:NN #1 \l__pkginfo_tmpa_tl
+    \tl_if_empty:NF \l__pkginfo_tmpa_tl
+      {
+        \tl_put_right:Nn #2 {.}
+        \tl_put_right:NV #2 \l__pkginfo_tmpa_tl
+      }
+  }
+
+
+

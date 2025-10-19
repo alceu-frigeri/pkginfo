@@ -1,4 +1,4 @@
-<PackageNAME>
+pkginfo
 ==========
 
 <Placeholder for test files>

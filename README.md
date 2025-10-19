@@ -1,13 +1,10 @@
-<PackageNAME>
+pkginfo
 ==========
 
-Template for LaTeX packages ...
-
-<PackageDescription>
+Collecting package's info in a regular way
 
 For more details,  see the documentation,
-[<PackageNAME>.pdf](http://mirrors.ctan.org/macros/latex/contrib/<PackageNAME>/doc/<PackageNAME>.pdf)
-[<PackageNAME>.pdf](http://mirrors.ctan.org/graphics/pgf/contrib/<PackageNAME>/doc/<PackageNAME>.pdf)
+[pkginfo.pdf](http://mirrors.ctan.org/macros/latex/contrib/pkginfo/doc/pkginfo.pdf)
 	
 --------------
 
@@ -16,13 +13,13 @@ For more details,  see the documentation,
 (with the new in kernel *\ProcessKeyOptions* and *\NewDocumentCommand*).
 
 ## Installation
-The stable version is available at [CTAN](https://ctan.org/pkg/<PackageNAME>).
+The stable version is available at [CTAN](https://ctan.org/pkg/pkginfo).
 
 ## Usage
 ### Stable version
 Just place
 ```latex
-  \usepackage{<PackageNAME>}
+  \usepackage{pkginfo}
 ```
 
 in the preamble and compile away.
@@ -30,12 +27,12 @@ in the preamble and compile away.
 ## Contacting Author
 
 For bug reports and enhancement suggestions, the preferred way is to use
-[the project's issue page](https://github.com/alceu-frigeri/<PackageNAME>/issues).
+[the project's issue page](https://github.com/alceu-frigeri/pkginfo/issues).
 Please be ready to provide an example code showing the bug, if any.
 
 Please do not use the issue page for generic help on how to use the package.
 
-* git: https://github.com/alceu-frigeri/<PackageNAME>
+* git: https://github.com/alceu-frigeri/pkginfo
 
 -------------
 Copyright 2025-present by Alceu Frigeri
@@ -53,27 +50,20 @@ The Current Maintainer of this work is Alceu Frigeri
 -------------
 ## This work consist of the files
 
-* <PackageNAME>.sty
+* pkginfo.sty
     - the package itself
 
 * README.md  (this file)
     - quick introduction
 
-* <PackageNAME>.bib
-* <PackageNAME>.tex
+* pkginfo.tex
     - package documentation
-* <PackageNAME>.pdf
+* pkginfo.pdf
     - documentation in PDF format
     
 -------------
 
 ## Change log
 
-* Version 1.0b (this)
-    - requiring {pkginfo} now.
-
-* Version 1.0a
-    - some typos. added biber template.
-
 * Version 1.0
-    - Initial setup.
+    - Initial release at CTAN.
