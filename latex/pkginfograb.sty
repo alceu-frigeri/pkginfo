@@ -74,10 +74,6 @@
       { \tl_clear:N #3 }
   }
 
-%%
-%% Why so? to avoid a name crash with older versions of this
-%% eventualy, this will be 'replaced' (no \cs_set..)
-%%
 \cs_new_protected:Npn \pkginfograb_description:n #1
   { 
     \prop_if_exist:cTF { l__pkginfograb_ #1 _prop }
@@ -286,8 +282,8 @@
   }
 
 
-%% just in case one wishes to use this in a LaTeX2e context.  
 
+%% just in case one wishes to use this in a LaTeX2e context.  
 \cs_new_protected:Npn \pkginfograb_set_aliases:
   {
     \cs_set_eq:NN \PkgInfoSet         \pkginfograb_set:nn
