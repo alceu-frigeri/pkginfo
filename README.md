@@ -1,10 +1,10 @@
-pkginfo
+pkginfograb
 ==========
 
 Collecting package's info in a regular way
 
 For more details,  see the documentation,
-[pkginfo.pdf](http://mirrors.ctan.org/macros/latex/contrib/pkginfo/doc/pkginfo.pdf)
+[pkginfograb.pdf](http://mirrors.ctan.org/macros/latex/contrib/pkginfograb/doc/pkginfograb.pdf)
 	
 --------------
 
@@ -13,13 +13,13 @@ For more details,  see the documentation,
 (with the new in kernel *\ProcessKeyOptions* and *\NewDocumentCommand*).
 
 ## Installation
-The stable version is available at [CTAN](https://ctan.org/pkg/pkginfo).
+The stable version is available at [CTAN](https://ctan.org/pkg/pkginfograb).
 
 ## Usage
 ### Stable version
 Just place
 ```latex
-  \usepackage{pkginfo}
+  \usepackage{pkginfograb}
 ```
 
 in the preamble and compile away.
@@ -27,12 +27,12 @@ in the preamble and compile away.
 ## Contacting Author
 
 For bug reports and enhancement suggestions, the preferred way is to use
-[the project's issue page](https://github.com/alceu-frigeri/pkginfo/issues).
+[the project's issue page](https://github.com/alceu-frigeri/pkginfograb/issues).
 Please be ready to provide an example code showing the bug, if any.
 
 Please do not use the issue page for generic help on how to use the package.
 
-* git: https://github.com/alceu-frigeri/pkginfo
+* git: https://github.com/alceu-frigeri/pkginfograb
 
 -------------
 Copyright 2025-present by Alceu Frigeri
@@ -50,15 +50,15 @@ The Current Maintainer of this work is Alceu Frigeri
 -------------
 ## This work consist of the files
 
-* pkginfo.sty
+* pkginfograb.sty
     - the package itself
 
 * README.md  (this file)
     - quick introduction
 
-* pkginfo.tex
+* pkginfograb.tex
     - package documentation
-* pkginfo.pdf
+* pkginfograb.pdf
     - documentation in PDF format
     
 -------------

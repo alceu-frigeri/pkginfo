@@ -1,0 +1,252 @@
+%%%==============================================================================
+% WinEdt pragmas
+% !Mode:: "TeX:EN"
+% Default Compile engines:
+% !TEX program = pdflatex
+% !PDFTeXify ext =  --enable-etex  --restrict-write18
+% !PDFLaTeX ext  =  --enable-etex  --restrict-write18
+% !BIB program = none
+%%%==============================================================================
+%% Copyright 2025-present by Alceu Frigeri
+%%
+%% This work may be distributed and/or modified under the conditions of
+%%
+%% * The [LaTeX Project Public License](http://www.latex-project.org/lppl.txt),
+%%   version 1.3c (or later), and/or
+%% * The [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html),
+%%   version 3 (or later)
+%%
+%% This work has the LPPL maintenance status *maintained*.
+%%
+%% The Current Maintainer of this work is Alceu Frigeri
+%%
+%% This is version {1.0} {2025/10/21}
+%%
+%% The list of files that compose this work can be found in the README.md file at
+%% https://ctan.org/pkg/pkginfograb
+%%
+%%%==============================================================================
+\documentclass[10pt]{article}
+\RequirePackage[verbose,a4paper,marginparwidth=27.5mm,top=2.5cm,bottom=1.5cm,hmargin={40mm,20mm},marginparsep=2.5mm,columnsep=10mm,asymmetric]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[infograb]{codedescribe}
+\RequirePackage[inline]{enumitem}
+\SetEnumitemKey{miditemsep}{parsep=0ex,itemsep=0.4ex}
+
+\usepackage{pkginfograb}
+
+%% if needed
+%\RequirePackage[backend=biber]{biblatex}
+%\addbibresource{pkginfograb.bib}
+
+\RequirePackage[hidelinks,hypertexnames=false]{hyperref}
+
+\begin{document}
+\tstitle{
+  author={Alceu Frigeri\footnote{\tsverb{https://github.com/alceu-frigeri/pkginfograb}}},
+  date={\tsdate},
+  title={The pkginfograb Package\break Version \PkgInfo{pkginfograb}{version}}
+  }
+  
+
+\begin{typesetabstract}
+
+This package is aimed at package writers and offers a way to collect/document \LaTeX\ package's info (name, version, description, etc.) in a systemized way, including a mechanism to check package's version. Just a few functions are defined, to document/set package's info, retrieve them and to verify package's version (for instance, to verify if a loaded package is newer than a given reference).
+
+\end{typesetabstract}
+
+%\tableofcontents
+
+\setnewcodekey{pkginfograb}{codeprefix={},resultprefix={},letter={@,_},
+  keywd2={
+    pkginfograb_set,pkginfograb_get,pkginfograb_req_version,pkginfograb_req_date,
+    pkginfograb_description,
+    PkgInfoSet,PkgInfo,PkgInfoDescription,PkgInfoReqVersion,PkgInfoReqDate
+    },
+  emph2={name,prefix,version,date,description}
+  }
+
+
+
+\section{Expl3 Commands}\label{expl3-cmds}
+
+
+\begin{codedescribe}{\pkginfograb_set:nn}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_set:nn}{pack-name,keyval-list}
+\end{codesyntax}
+This will create a property list associated with \tsobj[marg]{pack-name}. \tsobj[marg]{keyval-list} might contain any set of keys, though, the functions below expect at least \tsobj[meta,sep=or]{version,date} (for version checking) and \tsobj[meta]{name,version,date,description} (for \tsobj{\pkginfograb_description:n}).
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if calling it twice for the same \tsobj[marg]{pack-name}.
+\end{tsremark}
+
+ For Example:
+\begin{codestore}[demoA]
+\pkginfograb_set:nn {pkginfograb}
+  { 
+    name         = {pkginfograb} ,
+    prefix       = {pkginfograb} ,
+    date         = {2025/10/21},
+    version      = {1.0} ,
+    description  = {Collecting~ package's~ info~ in~ a~ regular~ way}
+  }
+\end{codestore}
+
+\tscode*[pkginfograb]{demoA}
+
+
+\begin{codedescribe}{\pkginfograb_req_version:nnn}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_req_version:nnn}{your-pack,pack-name,min-version}
+\end{codesyntax}
+This will verify if \tsobj[marg]{pack-name}'s \tsobj[marg]{version} (as stored with \tsobj{\pkginfograb_set:nn}) is at least \tsobj[marg]{min-version}. It expects \tsobj[marg]{version} in one of three formats \tsobj[keys,sep=or]{[v]digits[letters],[v]digits.digits[letters],[v]digits.digits.digits[letters]} (the \tsobj[key]{[v]}, if present, is ignored).
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if \tsobj[marg]{pack-name}'s info isn't defined, incorrect version format or \tsobj[marg]{min-version} isn't satisfied, in which case the error will note that \tsobj{your-pack} needs version \tsobj[marg]{min-version} of \tsobj[marg]{pack-name}.
+\end{tsremark}
+
+\begin{codedescribe}{\pkginfograb_req_date:nnn}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_req_date:nnn}{your-pack,pack-name,min-date}
+\end{codesyntax}
+This will verify if \tsobj[marg]{pack-name}'s \tsobj[marg]{date} (as stored with \tsobj{\pkginfograb_set:nn}) is at least \tsobj[marg]{min-date}. It expects \tsobj[marg]{date} in one of three formats \tsobj[keys,sep=or]{YYYY/MM/DD,YYYY-MM-DD,YYYY.MM.DD} .
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if \tsobj[marg]{pack-name}'s info isn't defined, incorrect version format or \tsobj[marg]{min-version} isn't satisfied, in which case the error will note that \tsobj{your-pack} needs version \tsobj[marg]{min-date} of \tsobj[marg]{pack-name}.
+\end{tsremark}
+
+
+\begin{codedescribe}{\pkginfograb_set_aliases:}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_set_aliases:}{}
+\end{codesyntax}
+This will set \LaTeXe\  aliases for the \tsobj[pkg]{expl3} in this package. Note that none of the commands in \ref{2e-cmds} are defined by default, except \tsobj{\PkgInfoSetAliases} which is an alias for this command.
+\end{codedescribe}
+
+
+
+\begin{codedescribe}[code,EXP]{\pkginfograb_get:nn}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_get:nn}{pack-name,key}
+\end{codesyntax}
+This will retrieve \tsobj[marg]{key}'s value. If \tsobj[marg,sep=or]{pack-name,key} doesn't exist, this will expands to nothing.
+\end{codedescribe}
+
+\begin{codedescribe}{\pkginfograb_get:nnN}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_get:nnN}{pack-name,key,tl-var}
+\end{codesyntax}
+This will store \tsobj[marg]{key}'s value at \tsobj[marg]{tl-var}. If \tsobj[marg,sep=or]{pack-name,key} doesn't exist, \tsobj[marg]{tl-var} will be cleared.
+\end{codedescribe}
+
+
+
+
+\begin{codedescribe}{\pkginfograb_description:n}
+\begin{codesyntax}%
+\tsmacro{\pkginfograb_description:n}{pack-name}
+\end{codesyntax}
+This will typeset a small paragraph (for data validation) with following \tsobj[marg]{pack-name}'s info: \tsobj[meta]{name,version,date,description}
+\end{codedescribe}
+For example:
+\begin{codestore}[demoD]
+\ExplSyntaxOn
+\pkginfograb_description:n{pkginfograb}
+\ExplSyntaxOff
+\end{codestore}
+
+\tsdemo[pkginfograb]{demoD}
+
+
+
+\section{LaTeX2e Commands' Aliases}\label{2e-cmds}
+All commands below are aliases to their \tsobj[pkg]{expl3} counterparts. Aside from \tsobj{\PkgInfoSetAliases} all other \LaTeX2e\ aliases aren't defined by default. Call either \tsobj[code,sep=or]{\pkginfograb_set_aliases:,\PkgInfoSetAliases} before using them.
+
+\begin{codedescribe}{\PkgInfoSet}
+\begin{codesyntax}%
+\tsmacro{PkgInfoSet}{pack-name,keyval-list}
+\end{codesyntax}
+This will create a property list associated with \tsobj[marg]{pack-name}. \tsobj[marg]{keyval-list} might contain any set of keys, though, the functions below expect at least \tsobj[meta]{version} (for version checking) and \tsobj[meta]{name,version,date,description} (for \tsobj{\PkgInfoDescription}).
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if calling it twice for the same \tsobj[marg]{pack-name}.
+\end{tsremark}
+For Example:
+\begin{codestore}[demoB]
+\PkgInfoSet {pkginfograb}
+  { 
+    name         = {pkginfograb} ,
+    prefix       = {pkginfograb} ,
+    date         = {2025/10/21},
+    version      = {1.0} ,
+    description  = {Collecting~ package's~ info~ in~ a~ regular~ way}
+  }
+\end{codestore}
+
+\tscode*[pkginfograb]{demoB}
+
+\begin{codedescribe}{\PkgInfoReqVersion}
+\begin{codesyntax}%
+\tsmacro{\PkgInfoReqVersion}{your-pack,pack-name,min-version}
+\end{codesyntax}
+This will verify if \tsobj[marg]{pack-name}'s \tsobj[marg]{version} (as stored with \tsobj{\PkgInfoSet}) is at least \tsobj[marg]{min-version}. It expects \tsobj[marg]{version} in one of three formats \tsobj[keys,sep=or]{[v]digits[letters],[v]digits.digits[letters],[v]digits.digits.digits[letters]} (the \tsobj[key]{[v]}, if present, is ignored).
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if \tsobj[marg]{pack-name}'s info isn't defined, incorrect version format or \tsobj[marg]{min-version} isn't satisfied, in which case the error will note that \tsobj{your-pack} needs version \tsobj[marg]{min-version} of \tsobj[marg]{pack-name}.
+\end{tsremark}
+
+
+\begin{codedescribe}{\PkgInfoReqDate}
+\begin{codesyntax}%
+\tsmacro{\PkgInfoReqDate}{your-pack,pack-name,min-date}
+\end{codesyntax}
+This will verify if \tsobj[marg]{pack-name}'s \tsobj[marg]{date} (as stored with \tsobj{\PkgInfoSet}) is at least \tsobj[marg]{min-date}. It expects \tsobj[marg]{date} in one of three formats \tsobj[keys,sep=or]{YYYY/MM/DD,YYYY-MM-DD,YYYY.MM.DD} .
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if \tsobj[marg]{pack-name}'s info isn't defined, incorrect version format or \tsobj[marg]{min-version} isn't satisfied, in which case the error will note that \tsobj{your-pack} needs version \tsobj[marg]{min-date} of \tsobj[marg]{pack-name}.
+\end{tsremark}
+
+\begin{codedescribe}{\PkgInfoSetAliases}
+\begin{codesyntax}%
+\tsmacro{\PkgInfoSetAliases}{}
+\end{codesyntax}
+This will set \LaTeXe\  aliases for the \tsobj[pkg]{expl3} in this package. Note that none of the commands in \ref{2e-cmds} are defined by default, except  this.
+\end{codedescribe}
+
+\begin{codedescribe}[code,EXP]{\PkgInfo}
+\begin{codesyntax}%
+\tsmacro{\PkgInfo}{pack-name,key}
+\end{codesyntax}
+This will retrieve \tsobj[marg]{key}'s value. If \tsobj[marg,sep=or]{pack-name,key} doesn't exist, this will expands to nothing.
+\end{codedescribe}
+
+\begin{codedescribe}{\PkgInfoGet}
+\begin{codesyntax}%
+\tsmacro{\PkgInfoGet}{pack-name,key,macro}
+\end{codesyntax}
+This will store \tsobj[marg]{key}'s value in \tsobj[marg]{macro}. If \tsobj[marg,sep=or]{pack-name,key} doesn't exist, \tsobj[marg]{macro} will be cleared.
+\end{codedescribe}
+
+
+\begin{codedescribe}{\PkgInfoDescription}
+\begin{codesyntax}%
+\tsmacro{\PkgInfoDescription}{pack-name}
+\end{codesyntax}
+This will typeset a small paragraph (for data validation) with following \tsobj[marg]{pack-name}'s info: \tsobj[meta]{name,version,date,description}
+\end{codedescribe}
+For example:
+\begin{codestore}[demoC]
+\PkgInfoDescription{pkginfograb}
+\end{codestore}
+
+\tsdemo[pkginfograb]{demoC}
+
+
+
+%% if needed
+%\printbibliography
+
+\end{document} 
